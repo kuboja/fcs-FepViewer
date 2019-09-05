@@ -23,7 +23,14 @@ namespace FepViewer
         {
             if (string.IsNullOrEmpty(FilePath))
             {
-                MessageBox.Show("je potřeba zadat cestu k XML souboru!", "Zadejte XML soubor", MessageBoxButton.OK, MessageBoxImage.Asterisk, MessageBoxResult.OK);
+                MessageBox.Show("Je potřeba zadat cestu k XML souboru!", "Zadejte XML soubor", MessageBoxButton.OK, MessageBoxImage.Asterisk, MessageBoxResult.OK);
+                return;
+            }
+
+            if (!File.Exists(FilePath))
+            {
+                MessageBox.Show("Soubor neexistuje!", "Zadejte XML soubor", MessageBoxButton.OK, MessageBoxImage.Asterisk, MessageBoxResult.OK);
+                return;
             }
 
             XmlSerializer ser = new XmlSerializer(typeof(XmlRootItem));
