@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.Win32;
+using System;
+using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
@@ -14,13 +17,28 @@ namespace FepViewer
 
         public string FilePath { get; set; }
 
+        public bool Autoload { get; set; }
+
+        public bool LoadButtonEnable { get; set; }
+
         public MainWindowsViewModel()
         {
-            TreeData = new XmlChildItem[] { new XmlChildItem { Expression = "not loaded", IsSelected = true, } };
+            ResetData();
+            Autoload = Properties.Settings.Default.Autoload;
+            LoadButtonEnable = true;
         }
 
-        public void LoadXml()
+        public void ResetData()
         {
+            TreeData = new XmlChildItem[] { new XmlChildItem { Expression = "not loaded", IsSelected = true, } };
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+        public async Task LoadXml()
+        {
+            LoadButtonEnable = false;
+
             if (string.IsNullOrEmpty(FilePath))
             {
                 MessageBox.Show("Je potřeba zadat cestu k XML souboru!", "Zadejte XML soubor", MessageBoxButton.OK, MessageBoxImage.Asterisk, MessageBoxResult.OK);
@@ -33,15 +51,56 @@ namespace FepViewer
                 return;
             }
 
-            XmlSerializer ser = new XmlSerializer(typeof(XmlRootItem));
-            FileStream file = new FileStream(FilePath, FileMode.Open);
-            XmlTextReader reader = new XmlTextReader(file);
+            try
+            {
+                var treeData = await DeserializeObjectAsync<XmlRootItem>(FilePath);
+                treeData.Item.IsExpanded = true;
+                treeData.Item.IsSelected = true;
 
-            var treeData = (XmlRootItem)ser.Deserialize(reader);
-            treeData.Item.IsExpanded = true;
-            treeData.Item.IsSelected = true;
+                TreeData = new XmlChildItem[] { treeData.Item };
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Nastala chyba při zpracování souboru:\n\n " + ex.Message);
+            }
 
-            TreeData = new XmlChildItem[] { treeData.Item };
+            LoadButtonEnable = true;
+        }
+
+        public static async Task<T> DeserializeObjectAsync<T>(string xmlFilePath)
+        {
+            return await Task.Run(() =>
+            {
+                using (FileStream file = new FileStream(xmlFilePath, FileMode.Open))
+                {
+                    using (XmlTextReader reader = new XmlTextReader(file))
+                    {
+                        XmlSerializer ser = new XmlSerializer(typeof(XmlRootItem));
+                        var theObject = (T)ser.Deserialize(reader);
+                        return theObject;
+                    }
+                }
+            });
+        }
+
+        internal async Task OpenFile()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "FEP xml files (*.fepxml)|*.fepxml"
+            };
+            if (!string.IsNullOrWhiteSpace(FilePath))
+            {
+                openFileDialog.InitialDirectory = Path.GetDirectoryName(FilePath);
+            }
+            if (openFileDialog.ShowDialog() == true)
+            {
+                FilePath = openFileDialog.FileName;
+                if (Autoload)
+                {
+                    await LoadXml();
+                }
+            }
         }
 
         public void ExpandAllFirst()
@@ -50,6 +109,13 @@ namespace FepViewer
             {
                 TreeData[0].ExpandAllFirst();
             }
+        }
+
+        public void SaveSettings()
+        {
+            Properties.Settings.Default.LastFile = FilePath;
+            Properties.Settings.Default.Autoload = Autoload;
+            Properties.Settings.Default.Save();
         }
     }
 }

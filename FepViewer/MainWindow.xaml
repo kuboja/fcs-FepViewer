@@ -8,7 +8,7 @@
         
         Title="FEP Viewer"
         Height="600"
-        Width="1100" 
+        Width="1100" Closing="Window_Closing" Loaded="Window_Loaded" 
         >
     <Grid>
         <Grid.RowDefinitions>
@@ -18,10 +18,13 @@
         </Grid.RowDefinitions>
         
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Margin="5" Padding="10,3" Click="Button_Click">Load XML</Button>
-            <Button Margin="5" Padding="10,3" Click="Expand_Click">Expand All First</Button>
+            <Button Margin="5" Padding="10,3" Click="Load_Click" IsEnabled="{Binding LoadButtonEnable}">Load</Button>
+            <Button Margin="5" Padding="10,3" Click="Expand_Click">Expand Firsts</Button>
             <TextBox Margin="5" Width="700" Padding="10,3" 
                      Text="{Binding FilePath}" />
+            <Button Margin="5" Padding="10,3" Click="Open_Click">Open</Button>
+            <CheckBox Margin="5" IsChecked="{Binding Autoload}"  VerticalAlignment="Center" Content="Autoload" ToolTip="Autoload after startup." />
+            <Button Margin="5" Click="Close_Click" Visibility="Collapsed">Close</Button>
         </StackPanel>
         
         <TreeView Name="tree" Grid.Row="1" Margin="5" 
