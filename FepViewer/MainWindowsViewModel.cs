@@ -24,13 +24,13 @@ namespace FepViewer
         public MainWindowsViewModel()
         {
             ResetData();
-            Autoload = Properties.Settings.Default.Autoload;
+            Autoload = SettingHelper.Settings.Autoload;
             LoadButtonEnable = true;
         }
 
         public void ResetData()
         {
-            TreeData = new XmlChildItem[] { new XmlChildItem { Expression = "not loaded", IsSelected = true, } };
+            TreeData = new XmlChildItem[] { new XmlChildItem { Expression = "not loaded yet", IsSelected = true, } };
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -113,9 +113,9 @@ namespace FepViewer
 
         public void SaveSettings()
         {
-            Properties.Settings.Default.LastFile = FilePath;
-            Properties.Settings.Default.Autoload = Autoload;
-            Properties.Settings.Default.Save();
+            SettingHelper.Settings.LastFilepath = FilePath;
+            SettingHelper.Settings.Autoload = Autoload;
+            SettingHelper.SaveAll();
         }
     }
 }

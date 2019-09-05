@@ -25,7 +25,7 @@ namespace FepViewer
             }
             else
             {
-                view.FilePath = Properties.Settings.Default.LastFile;
+                view.FilePath = SettingHelper.Settings.LastFilepath;
             }
 
             base.DataContext = view;
