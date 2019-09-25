@@ -10,6 +10,7 @@
         Height="600"
         Width="1100" Closing="Window_Closing" Loaded="Window_Loaded" 
         >
+        <!--d:DataContext="{d:DesignInstance Type=local:MainWindowsViewModel}"-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -26,38 +27,77 @@
             <CheckBox Margin="5" IsChecked="{Binding Autoload}"  VerticalAlignment="Center" Content="Autoload" ToolTip="Autoload after startup." />
             <Button Margin="5" Click="Close_Click" Visibility="Collapsed">Close</Button>
         </StackPanel>
-        
-        <TreeView Name="tree" Grid.Row="1" Margin="5" 
-                  ItemsSource="{Binding Path=TreeData}">
+
+        <TabControl Name="mainTabs" Grid.Row="1" Margin="5">
+
+            <TabItem Header="Tree">
+                <TreeView Name="tree" ItemsSource="{Binding Path=TreeData}" >
+
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate 
+                            DataType="{x:Type local:XmlChildItem}" 
+                            ItemsSource="{Binding Children}" >
+                            <!--<Border BorderBrush="#FF000000" BorderThickness="0,0,0,0.5" Margin="0,0,0,1" Hor >-->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Width="60" TextBlock.Foreground="#FF3F1C91" TextBlock.TextAlignment="Right" Margin="0,0,5,0" 
+                                               Text="{Binding DurationFormated}" />
+                                        <TextBlock Width="60" TextBlock.Foreground="#FF16610F" TextBlock.TextAlignment="Right" Margin="0,0,5,0" 
+                                               Text="{Binding CallsFormated}" />
+                                        <TextBlock Width="70" TextBlock.TextAlignment="Right" TextBlock.Foreground="#FF882F03" Margin="0,0,5,0" 
+                                               Text="{Binding BytesFormated}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" 
+                                               Text="{Binding Expression}" MaxWidth="500" />
+
+                                </Grid>
+                            <!--</Border>-->
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="TreeViewItem.IsSelected" Value="{Binding IsSelected}" />
+                            <Setter Property="TreeViewItem.IsExpanded" Value="{Binding IsExpanded}" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+
+                </TreeView>
+            </TabItem>
+
+            <TabItem Header="Memory">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <Button Name="Load" Content="Load" Margin="5" Padding="10,0" Click="LoadMemory_Click" />
+                    </StackPanel>
+                    <DataGrid Name="dgMemoryGrid"  ItemsSource="{Binding MemoryDataSorted}" 
+                              AutoGenerateColumns="False" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True"
+                              MouseDoubleClick="DataGrid_MouseDoubleClick" CanUserResizeColumns="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Path" Binding="{Binding Path}" Width="100"/>
+                            <DataGridTextColumn Header="Memory [kB]" Binding="{Binding TreeItem.KilobytesString}" Width="100">
+                                <DataGridTextColumn.CellStyle>
+                                    <Style>
+                                        <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Expression" Binding="{Binding TreeItem.Expression}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
             
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate 
-                    DataType="{x:Type local:XmlChildItem}" 
-                    ItemsSource="{Binding Children}">
-                    <Border BorderBrush="#FF000000" BorderThickness="0,0,0,0.5" Margin="0,0,0,1">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Width="60" TextBlock.Foreground="#FF3F1C91" TextBlock.TextAlignment="Right" Margin="0,0,5,0" 
-                                       Text="{Binding DurationFormated}" />
-                            <TextBlock Width="60" TextBlock.Foreground="#FF16610F" TextBlock.TextAlignment="Right" Margin="0,0,5,0" 
-                                       Text="{Binding CallsFormated}" />
-                            <TextBlock Width="70" TextBlock.TextAlignment="Right" TextBlock.Foreground="#FF882F03" Margin="0,0,5,0" 
-                                       Text="{Binding BytesFormated}" />
-                            <TextBlock TextWrapping="NoWrap" Width="500" TextTrimming="CharacterEllipsis" 
-                                       Text="{Binding Expression}" />
-                        </StackPanel>
-                    </Border>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-            
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="TreeViewItem.IsSelected" Value="{Binding IsSelected}" />
-                    <Setter Property="TreeViewItem.IsExpanded" Value="{Binding IsExpanded}" />
-                </Style>
-            </TreeView.ItemContainerStyle>
-            
-        </TreeView>
-        
+        </TabControl>
+
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition />

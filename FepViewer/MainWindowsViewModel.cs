@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
@@ -14,6 +16,10 @@ namespace FepViewer
         public event PropertyChangedEventHandler PropertyChanged;
 
         public XmlChildItem[] TreeData { get; set; }
+
+        public FlatItem[] MemoryData { get; set; }
+
+        public IEnumerable<FlatItem> MemoryDataSorted => MemoryData.OrderByDescending(d => d.TreeItem.Kilobytes).Where(m => m.TreeItem.Kilobytes > 0);
 
         public string FilePath { get; set; }
 
@@ -31,6 +37,7 @@ namespace FepViewer
         public void ResetData()
         {
             TreeData = new XmlChildItem[] { new XmlChildItem { Expression = "not loaded", IsSelected = true, } };
+            MemoryData = new FlatItem[] { new FlatItem { Path = "0", TreeItem = new XmlChildItem { Expression = "not calculated", IsSelected = true, } } };
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -58,6 +65,10 @@ namespace FepViewer
                 treeData.Item.IsSelected = true;
 
                 TreeData = new XmlChildItem[] { treeData.Item };
+
+                TreeData[0].SetParentToChildren(null);
+
+                MemoryData = new FlatItem[] { new FlatItem { Path = "0", TreeItem = new XmlChildItem { Expression = "not calculated", IsSelected = true, } } };
             }
             catch (Exception ex)
             {
@@ -100,6 +111,15 @@ namespace FepViewer
                 {
                     await LoadXml();
                 }
+            }
+        }
+
+        public void GetMaxItems()
+        {
+            if (TreeData.Length > 0)
+            {
+                var flat = TreeData[0].GetFlat("0").ToArray();
+                MemoryData = flat;
             }
         }
 
