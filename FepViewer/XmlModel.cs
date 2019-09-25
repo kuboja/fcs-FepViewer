@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace FepViewer
@@ -33,6 +35,8 @@ namespace FepViewer
         [XmlArrayItem("item")]
         public XmlChildItem[] Children { get; set; }
 
+        public XmlChildItem Parent { get; set; }
+
         public bool IsExpanded { get; set; } = false;
 
         public bool IsSelected { get; set; } = false;
@@ -62,6 +66,11 @@ namespace FepViewer
             }
         }
 
+        public string KilobytesString
+        {
+            get => Kilobytes.ToString("N0");
+        }
+
         public void ExpandAllFirst()
         {
             IsExpanded = true;
@@ -70,5 +79,32 @@ namespace FepViewer
                 Children[0].ExpandAllFirst();
             }
         }
+
+        public FlatItem[] GetFlat(string localPath)
+        {
+            return Children.SelectMany((c, i) => new FlatItem[] { new FlatItem { TreeItem = this, Path = localPath + "," + i } }.Concat(c.GetFlat(localPath + "," + i))).ToArray();
+        }
+
+        public void SetParentToChildren(XmlChildItem parent)
+        {
+            Parent = parent;
+            foreach (var item in Children)
+            {
+                item.SetParentToChildren(this);
+            }
+        }
+
+        public void SetExpandToParent(bool isExpand)
+        {
+            IsExpanded = isExpand;
+            Parent?.SetExpandToParent(isExpand);
+        }
+    }
+
+    public class FlatItem
+    {
+        public string Path { get; set; }
+
+        public XmlChildItem TreeItem { get; set; }
     }
 }

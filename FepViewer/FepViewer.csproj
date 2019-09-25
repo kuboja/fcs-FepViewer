@@ -3,9 +3,11 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UseWPF>true</UseWPF>
+    
     <AssemblyName>FepViewer</AssemblyName>
-    <Version>1.1.0</Version>
+    <Version>1.2.2</Version>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    
   </PropertyGroup>
   
   <ItemGroup>

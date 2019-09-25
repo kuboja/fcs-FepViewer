@@ -61,5 +61,20 @@ namespace FepViewer
         {
             view.ResetData();
         }
+
+        private void LoadMemory_Click(object sender, RoutedEventArgs e)
+        {
+            view.GetMaxItems();
+        }
+
+        private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var it = (FlatItem)dgMemoryGrid.SelectedItem;
+
+            it.TreeItem.SetExpandToParent(true);
+            it.TreeItem.IsSelected = true;
+
+            Dispatcher.BeginInvoke((Action)(() => mainTabs.SelectedIndex = 0));
+        }
     }
 }
