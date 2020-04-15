@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FepViewer", "FepViewer\FepViewer.csproj", "{42CCABB1-2441-4A0E-8D04-D0B7B25ABD7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FepViewer", "FepViewer\FepViewer.csproj", "{42CCABB1-2441-4A0E-8D04-D0B7B25ABD7E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{2E96D3D0-F860-4A61-8225-21F2318D1C3B}"
+	ProjectSection(SolutionItems) = preProject
+		DistScripts\BuildFepViewerZip.cmd = DistScripts\BuildFepViewerZip.cmd
+		DistScripts\DeployFepViewerZip.cmd = DistScripts\DeployFepViewerZip.cmd
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
