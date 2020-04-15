@@ -19,13 +19,12 @@
         </Grid.RowDefinitions>
         
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Margin="5" Padding="10,3" Click="Load_Click" IsEnabled="{Binding LoadButtonEnable}">Load</Button>
-            <Button Margin="5" Padding="10,3" Click="Expand_Click">Expand Firsts</Button>
-            <TextBox Margin="5" Width="700" Padding="10,3" 
-                     Text="{Binding FilePath}" />
-            <Button Margin="5" Padding="10,3" Click="Open_Click">Open</Button>
+            <Button Margin="5" Padding="10,3" Click="Load_Click" IsEnabled="{Binding LoadButtonEnable}" Content="Load" />
+            <Button Margin="5" Padding="10,3" Click="Expand_Click" Content="Expand Firsts" />
+            <TextBox Margin="5" Width="700" Padding="10,3" Text="{Binding FilePath}" />
+            <Button Margin="5" Padding="10,3" Click="Open_Click" Content="Open" />
             <CheckBox Margin="5" IsChecked="{Binding Autoload}"  VerticalAlignment="Center" Content="Autoload" ToolTip="Autoload after startup." />
-            <Button Margin="5" Click="Close_Click" Visibility="Collapsed">Close</Button>
+            <Button Margin="5" Click="Close_Click" Visibility="Collapsed" Content="Close" />
         </StackPanel>
 
         <TabControl Name="mainTabs" Grid.Row="1" Margin="5">
@@ -110,18 +109,18 @@
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            
-            <TextBlock Grid.Column="0" Grid.Row="0" Margin="5">Duration:</TextBlock>
+
+            <TextBlock Grid.Column="0" Grid.Row="0" Margin="5" Text="Duration" />
             <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" 
                        TextBlock.TextAlignment="Right" 
                        Text="{Binding ElementName=tree, Path=SelectedValue.DurationFormated}" />
-            
-            <TextBlock Grid.Column="0" Grid.Row="1" Margin="5">Calls:</TextBlock>
+
+            <TextBlock Grid.Column="0" Grid.Row="1" Margin="5" Text="Calls:" />
             <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" 
                        TextBlock.TextAlignment="Right" 
                        Text="{Binding ElementName=tree, Path=SelectedValue.CallsFormated}" />
-            
-            <TextBlock Grid.Column="0" Grid.Row="2" Margin="5">Memory:</TextBlock>
+
+            <TextBlock Grid.Column="0" Grid.Row="2" Margin="5" Text="Memory:" />
             <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" 
                        TextBlock.TextAlignment="Right" 
                        Text="{Binding ElementName=tree, Path=SelectedValue.BytesFormated}" />
